@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.19" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DataTransferObjects\" />
+    <Folder Include="IRepositories\" />
+    <Folder Include="MappingProfiles\" />
+    <Folder Include="Model\" />
   </ItemGroup>
 
 </Project>

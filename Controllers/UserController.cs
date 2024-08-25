@@ -9,7 +9,7 @@ namespace ChatApp.Controllers
     {
         public UserController()
         {
-            
+
         }
         [HttpGet("getUser")]
         public async Task<ActionResult> GetUserDetails()

@@ -8,15 +8,21 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.19" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.11" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.2" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+	  </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="DataTransferObjects\" />
     <Folder Include="IRepositories\" />
     <Folder Include="MappingProfiles\" />
-    <Folder Include="Model\" />
   </ItemGroup>
 
 </Project>

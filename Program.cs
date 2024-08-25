@@ -3,6 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using ChatApp.DB_Context;
 using Microsoft.EntityFrameworkCore;
+using ChatApp.IRepositories;
+using ChatApp.Repositories;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,6 +25,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ChatDBContext>(options =>
 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+///mapper
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 ///cors configuration:
 builder.Services.AddCors(options =>
 {
@@ -29,6 +40,10 @@ builder.Services.AddCors(options =>
         });
 });
 
+///Dependency Configuration:
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+//Authentification
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

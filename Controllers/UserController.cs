@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ChatApp.DataTransferObjects;
+using ChatApp.IRepositories;
+using ChatApp.Model.User;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatApp.Controllers
@@ -7,20 +11,50 @@ namespace ChatApp.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public UserController()
+        private readonly IUserRepository userRepository;
+        public UserController(IUserRepository userRepository)
         {
-
+            this.userRepository = userRepository;
         }
         [HttpGet("getUser")]
-        public async Task<ActionResult> GetUserDetails()
+        //[Authorize]
+        public async Task<ActionResult> GetUserDetails(int id)
         {
             try
             {
-                return Ok(new { Code = 200, Status = true, Message = "", Data = "userdetails" });
+                //var response = await userRepository.GetAllUserList(int.Parse(User.Claims.FirstOrDefault(c => c.Type == "jti").Value));
+                var response = await userRepository.GetAllUserList(id);
+                return Ok(new { Code = 200, Status = true, Message = "", Data = response });
             }
             catch (Exception ex)
             {
-                return Ok(new { Code = 401, Status = false, Message = ex, Data = new { } });
+                return Ok(new { Code = 400, Status = false, Message = ex, Data = new { } });
+            }
+        }
+        [HttpPost("AddUser")]
+        public async Task<ActionResult> CreateUser(User userResponse)
+        {
+            try
+            {
+                var response = await userRepository.AddUser(userResponse);
+                return Ok(new { Code = 200, Status = true, Message = "DATA_INSERT_SUCCESS", Data = new { data = response } });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { Code = 400, Status = false, Message = ex, Data = new { } });
+            }
+        }
+        [HttpPost("Login")]
+        public async Task<ActionResult> LoginUser(UserRequestDTO userRequest)
+        {
+            try
+            {
+                var response = await userRepository.UserLogin(userRequest);
+                return Ok(new { Code = 200, Status = true, Message = "USER_LOGIN_SUCCESS", Data = new { data = response } });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { Code = 400, Status = false, Message = ex, Data = new { } });
             }
         }
     }

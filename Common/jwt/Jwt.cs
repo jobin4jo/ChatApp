@@ -17,8 +17,8 @@ namespace ChatApp.Common.jwt
             var credentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.HmacSha256);
 
             var claimList = new List<Claim>();
-            claimList.Add(new Claim(JwtRegisteredClaimNames.NameId, role));
-            claimList.Add(new Claim(JwtRegisteredClaimNames.Sub, role.ToString()));
+            claimList.Add(new Claim(JwtRegisteredClaimNames.NameId, "User"));
+            claimList.Add(new Claim(JwtRegisteredClaimNames.Sub, "User"));
             claimList.Add(new Claim(JwtRegisteredClaimNames.Jti, id.ToString()));
             claimList.Add(new Claim(ClaimTypes.Role, role.ToString()));
             var token = new JwtSecurityToken(

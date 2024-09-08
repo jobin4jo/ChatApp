@@ -8,6 +8,11 @@ using ChatApp.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using ChatApp.IService;
+using ChatApp.Service;
+using ChatApp.ChatHUB;
+using System.Net;
+using ChatApp.Common.CommonDTO;
 
 
 
@@ -27,21 +32,26 @@ options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
 
 ///mapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
-
+builder.Services.Configure<PayUSettings>(builder.Configuration.GetSection("PayUSettings"));
 ///cors configuration:
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
+    options.AddPolicy("AllowSpecificOrigin",
         builder =>
         {
-            builder.WithOrigins("*")
-                                .AllowAnyHeader()
-                                .AllowAnyMethod();
+            builder.WithOrigins("http://localhost:4200")
+                                .AllowAnyHeader().SetIsOriginAllowed((host) => true)
+                                .AllowAnyMethod().AllowCredentials();
         });
 });
 
 ///Dependency Configuration:
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddTransient<IPaymentRepository, PaymentRepository>();
+
+//signalR configuration:
+builder.Services.AddSignalR();
 
 //Authentification
 builder.Services.AddAuthentication(options =>
@@ -60,6 +70,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("User", policy => policy.RequireRole("User"));
+});
 var app = builder.Build();
 
 
@@ -69,14 +83,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowSpecificOrigin");
 app.UseHttpsRedirection();
-app.UseCors();
 
-
+app.MapHub<MessageHub>("/userHub");
+//app.UseSignalR(routes =>
+//{
+//    routes.MapHub<General>("/hubs/general");
+//});
+app.UseRouting();
 app.UseAuthorization();
-app.UseAuthorization();
-
+app.UseAuthentication();
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();

@@ -14,6 +14,7 @@ namespace ChatApp.Model.User
         public bool IsActive { get; set; }
         public bool IsOnline { get; set; }
         public string ConnectionId { get; set; }
+        public string phoneNumber { get; set; }
         public DateTime LastLogin { get; set; }
     }
 }

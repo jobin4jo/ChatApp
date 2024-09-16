@@ -5,9 +5,10 @@ namespace ChatApp.IRepositories
 {
     public interface IUserRepository
     {
-        Task<int>AddUser(User user);
+        Task<int> AddUser(User user);
         Task<List<UserListResponseDTO>> GetAllUserList(int id);
         Task<UserResponseDTO> UserLogin(UserRequestDTO userRequest);
         Task<bool> Logout(int id);
+        User GetUserByName(string name);
     }
 }

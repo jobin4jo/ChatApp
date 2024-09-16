@@ -102,12 +102,25 @@ namespace ChatApp.Repositories
         {
             try
             {
-                await userService.UpdateStatus(id, UserConstant.Offline);
+                await userService.UpdateStatus(id);
                 return true;
             }
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+        public User GetUserByName(string name)
+        {
+            try
+            {
+                var userData = context.Users.SingleOrDefault(x => x.UserName.ToLower() == name.ToLower());
+                return userData;
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

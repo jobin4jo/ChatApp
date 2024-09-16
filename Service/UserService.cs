@@ -31,6 +31,12 @@ namespace ChatApp.Service
             return user;
         }
 
+        public User GetUserByConnectionId(string ConnectionId)
+        {
+            var user = context.Users.FirstOrDefault(x => x.ConnectionId == ConnectionId);
+            return user;
+        }
+
         public async Task<User?> GetUserByName(string userName)
         {
             var user = context.Users.SingleOrDefault(x => x.UserName.ToLower() == userName.ToLower());
@@ -43,11 +49,13 @@ namespace ChatApp.Service
             return user == null ? null : user;
         }
 
-        public async Task UpdateStatus(int id, string status)
+        public async Task UpdateStatus(int id)
         {
             var user = await context.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
             if (user != null)
             {
+                user.IsOnline = false;
+                user.ConnectionId = null;
                 await context.SaveChangesAsync();
             }
         }

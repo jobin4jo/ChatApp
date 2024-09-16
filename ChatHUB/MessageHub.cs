@@ -1,4 +1,5 @@
 ﻿using ChatApp.Common.Static;
+using ChatApp.DataTransferObjects;
 using ChatApp.IService;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
@@ -9,9 +10,11 @@ namespace ChatApp.ChatHUB
     public class MessageHub : Hub
     {
         private readonly IUserService userService;
-        public MessageHub(IUserService userService)
+        private readonly IChatService chatService;
+        public MessageHub(IUserService userService, IChatService chatService)
         {
             this.userService = userService;
+            this.chatService = chatService;
         }
 
         public async Task Login(string userName)
@@ -55,17 +58,25 @@ namespace ChatApp.ChatHUB
 
             if (receiver != null)
             {
-                await Clients.Client(receiver.ConnectionId).SendAsync("ReceiveMessage", Context.User.Identity.Name, message);
+                var SenderUser = userService.GetUserByConnectionId(Context.ConnectionId);
+                var chatmessage = new ChatMessageRequestDTO
+                {
+                    SenderName = SenderUser.UserName,
+                    ReceiverName = receiver.UserName,
+                    Message = message,
+                    Timestamp = DateTime.UtcNow
+                };
+                await chatService.UpdateChatMessage(chatmessage);
+                await Clients.Client(receiver.ConnectionId).SendAsync("ReceiveMessage", SenderUser.UserName, message);
             }
         }
+        public async Task GetMessages(string ReceiverName)
+        {
+            var SenderUser = userService.GetUserByConnectionId(Context.ConnectionId);
+            var messages = await chatService.ChatMessagesList(SenderUser.UserName, ReceiverName);
+            await Clients.Caller.SendAsync("ReceiveMessageHistory", messages);
+        }
 
-    }
-    public class Message
-    {
-        public string clientuniqueid { get; set; }
-        public string type { get; set; }
-        public string message { get; set; }
-        public DateTime date { get; set; }
     }
 
 }

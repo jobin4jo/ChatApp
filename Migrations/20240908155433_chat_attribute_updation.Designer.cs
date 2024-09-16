@@ -3,6 +3,7 @@ using System;
 using ChatApp.DB_Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChatApp.Migrations
 {
     [DbContext(typeof(ChatDBContext))]
-    partial class ChatDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240908155433_chat_attribute_updation")]
+    partial class chat_attribute_updation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,43 +50,6 @@ namespace ChatApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("chatMessages");
-                });
-
-            modelBuilder.Entity("ChatApp.Model.Payments.Payments", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("RecieverId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TransactionId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("paymentMode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("payments");
                 });
 
             modelBuilder.Entity("ChatApp.Model.User.User", b =>
@@ -129,10 +94,6 @@ namespace ChatApp.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("phoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
 

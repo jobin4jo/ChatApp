@@ -13,7 +13,7 @@ using ChatApp.Service;
 using ChatApp.ChatHUB;
 using System.Net;
 using ChatApp.Common.CommonDTO;
-
+using DotNetEnv;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +29,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ChatDBContext>(options =>
 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+Env.Load();
 
 ///mapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
@@ -49,7 +51,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IPaymentServices, PaymentServices>();
 
+builder.Services.Configure<PayUSettings>(builder.Configuration.GetSection("PayUSettings"));
 //signalR configuration:
 builder.Services.AddSignalR();
 
